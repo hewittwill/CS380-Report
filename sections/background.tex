@@ -1,28 +1,62 @@
-Two-dimensional echocardiography plays a critical role in the clinical routine
-as a low-cost, non-radiating and non-invasive method of assessing cardiac
-structure and function. The analysis of echocardiography generally involves the
-extraction of clinical measures, generally by manual or only semi-automated
-techniques. \newline
+Two-dimensional echocardiography (echo) is a common modality for assessing cardiac
+structure and function. The process of evaluating an echocardiogram typically involves the
+measurement of multiple clinical indices, which quantify various aspects of the
+hearts structure and function. \newline
 
-An example of one such clinical measure is left ventricular ejection fraction
-(LVEF), a ratio between the volume of the heart at End Systole (ES) and End
-Diastole (ED). Heart volume measurements rely on the accurate segmentation of
-the left ventricular myocardium, from the left ventricular cavity, at both ES
-and ED. In the present typical clinical routine, these segmentations are made
-manually by clinicians leading to poor accuracy and a lack of reproducibility of
-measurements between readers. \newline
+These clinical indices typically rely on manual image processing tasks performed 
+by the reading clinician. An example of one the most important and general measurements is
+left ventricular ejection fraction (LVEF). The measurement of LVEF requires the
+manual segmentation of the left ventricle at both end-systole (ES) and
+end-diastole (ED). Semi-automated solutions for this do already exist, but have
+limited performance in the clinical workflow. \newline
 
-Convolutional Neural Networks (CNNs) have played an increasingly important role
-in the field of medical image processing, their ability to extract complex
-features from very noisy data has 
+Recent work has shown that an automated pipeline using convolutional neural
+networks (CNNs) are able to extract standard clinical indices to near human
+level accuracy. Almost all the prior work in the space is reliant on
+encoder-decoder architecture CNNs to automate the segmentation of cardiac
+structures from echocardiography images. Subsequently the entire analysis
+pipeline is sensitive to the performance of the underlying encoder-decoder neural
+network. \newline
 
-In this project, we first establish a baseline for the segmentation of the LV using a
-encoder-decoder convolutional neural network. \newline
+Encoder-decoder neural networks for semantic segmentation maps an input image to
+a segmentation mask, labelling each pixel within the image to one of any number
+of pre-defined segmentation classes. The encoder half of the neural network maps
+the high-dimension input image, to a lower-dimension latent representation of
+the image, similar to a convolutional neural network being used for
+classification. Rather than using fully-connected layers to then arrive at an
+end classification, the decoder half of the neural network maps the latent
+representation of the image, to a segmentation map labelling each pixel to a
+segmentation class. \newline
 
-We then demonstrate that a Conditional Generative Adversarial Network (C-GAN)
-can be used to generate photorealistic ultrasound images, from a ground truth
-segmentation map. \newline
+Since their introduction in 2014 by Goodfellow et al., Generative Adversarial
+Networks (GANs) have made significant advances in a wide variety of deep learning
+problem domains. GANs are made up of two seperate neural networks - the
+generator, and the discriminator. The generator takes a random variable "seed"
+and generates a fake sample. The disciminator classifies the input sample
+(coming from either the generator, or the ground truth dataset) into either
+"real" or "fake." \newline
 
-Then the C-GAN based augmentation approach is compared to image-processing
-dataset augmentations, to establish if a significant effect on performance can
-be found.
+During training, the weights of both the generator and the discriminator are
+updated simultaneously until the generator is generating samples that the
+discriminator can no longer distinguish from real and fake. In this way, the
+generator of a GAN learns to model a probability distribution - a more obvious
+example coming from the field of image generation. If one imagines
+there is a probability distribution over the set of all labrador images, then the
+discriminator would be learning to discriminate between the real labrador images
+from the training dataset, and the fake ones being synthesised by the generator.
+In early iterations the synthesised images from the generator would have little
+resemblance to an image of a labrador, but in later epochs the generator would
+produce highly realistc images of a labrador. \newline
+
+A subfield of GANs known as Conditional Generative Adversarial Networks (C-GANs)
+have more direct utility in the field of image segmentations. C-GANs are largely
+similar to a base GAN model, except the input of the generator is a specific
+condition or parameter rather than a random variable seed input. \newline
+
+In this body of work, we first establish a baseline for the segmentation of echo
+frames using the well known encoder-decoder neural network U-Net. We also
+validate previous work that a C-GAN can be used to generate photorealistic
+ultrasound images from a groud truth segmentation map. Finally, we then compare
+the effect on segmentation accuracy by using either image-processing data augmentation
+or C-GAN synthesised images as a form of data augmentation, on the original
+encoder-decoder segmentation neural network.
