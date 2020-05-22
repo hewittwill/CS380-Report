@@ -10,4 +10,19 @@ Diastole (ED). Heart volume measurements rely on the accurate segmentation of
 the left ventricular myocardium, from the left ventricular cavity, at both ES
 and ED. In the present typical clinical routine, these segmentations are made
 manually by clinicians leading to poor accuracy and a lack of reproducibility of
-measurements between readers.
+measurements between readers. \newline
+
+Convolutional Neural Networks (CNNs) have played an increasingly important role
+in the field of medical image processing, their ability to extract complex
+features from very noisy data has 
+
+In this project, we first establish a baseline for the segmentation of the LV using a
+encoder-decoder convolutional neural network. \newline
+
+We then demonstrate that a Conditional Generative Adversarial Network (C-GAN)
+can be used to generate photorealistic ultrasound images, from a ground truth
+segmentation map. \newline
+
+Then the C-GAN based augmentation approach is compared to image-processing
+dataset augmentations, to establish if a significant effect on performance can
+be found.
