@@ -1,3 +1,4 @@
+\subsection{Echocardiography}
 Two-dimensional echocardiography (echo) is a common modality for assessing cardiac
 structure and function. The process of evaluating an echocardiogram typically involves the
 measurement of multiple clinical indices, which quantify various aspects of the
@@ -9,6 +10,8 @@ left ventricular ejection fraction (LVEF). The measurement of LVEF requires the
 manual segmentation of the left ventricle at both end-systole (ES) and
 end-diastole (ED). Semi-automated solutions for this do already exist, but have
 limited performance in the clinical workflow. \newline
+
+\subsection{Convolutional Neural Networks}
 
 Recent work has shown that an automated pipeline using convolutional neural
 networks (CNNs) are able to extract standard clinical indices to near human
@@ -27,6 +30,8 @@ classification. Rather than using fully-connected layers to then arrive at an
 end classification, the decoder half of the neural network maps the latent
 representation of the image, to a segmentation map labelling each pixel to a
 segmentation class. \newline
+
+\subsection{Generative Adversarial Networks}
 
 Since their introduction in 2014 by Goodfellow et al., Generative Adversarial
 Networks (GANs) have made significant advances in a wide variety of deep learning
@@ -52,6 +57,21 @@ A subfield of GANs known as Conditional Generative Adversarial Networks (C-GANs)
 have more direct utility in the field of image segmentations. C-GANs are largely
 similar to a base GAN model, except the input of the generator is a specific
 condition or parameter rather than a random variable seed input. \newline
+
+In the context of this project, C-GANs have been utilised by Abdi et al.
+\cite{abdiGANenhancedConditionalEchocardiogram2019} to generate photorealistic  
+echocardiogram frames, from a ground truth segmentation map. The generator of
+the GAN in this context can be viewed as the transferfunction mapping the set of
+ground-truth segmentation masks, to the set of photorealistic echocardiography
+images. This can be described as: \newline
+
+\begin{equation}
+    T:G \rightarrow P
+\end{equation} \newline
+
+Where $G$ is the set of ground-truth segmentations in the context of 
+
+\subsection{}
 
 In this body of work, we first establish a baseline for the segmentation of echo
 frames using the well known encoder-decoder neural network U-Net. We also
