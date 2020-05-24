@@ -1,0 +1,111 @@
+\subsection{Deep Learning for Echocardiography}
+
+Previous bodies of work \cite{zhangFullyAutomatedEchocardiogram2018}
+\cite{leclercDeepLearningSegmentation2019} \cite{hewitt2019artificial} have
+proven that a deep learning based approach approaches human-level accuracy when
+measuring standard clinical indices such as LVEF. \newline
+
+Zhang et al. developed the most complete approach to the overall and is the
+focus for this section of our review. In their work they developed a multistage
+pipeline for the complete analysis of an echocardiogram, split into three
+distinct stages - view classification, segmentation and applications. \newline
+
+The first stage of the pipeline (view classification) classifies each cine in
+the echocardiography study into 1 of 22 different views. Using a common CNN
+architecture known as VGG-16, 10 random, downsized (224 x 224), grayscaled, and
+normalied (pixel values ranging from 0-1) frames are extracted from each cine
+and classified fed into the neural network, which returns a 22x1 probability
+vector where each entry referring to the probability of the cine being a given
+view. During validation this model achieved a 99\% accuracy for classifying each
+view.
+\newline
+
+The second stage of the pipeline (segmentation) segments cines that are of a
+view of interest. Zhang et al. consider Apical 2 Chamber (A2C), Apical 4 Chamber
+(A4C), Parasternal Short Axis (PSAX) and Parasternal Long Axis (PLAX) views of
+interest. What view is of interest is typically driven by the clinical question,
+in this case being assessing LV function. Having identified the views that are
+of interet in the view classification stage, the segmentation stage uses four
+seperately traind encoder-decoder neural networks, with the same common
+encoder-decoder architecture known as U-Net. Using the same downsampled,
+normalised images as the view classification step the segmentation models take
+in a frame, and return a classification mask classifying each pixel into one of
+several classes. For the key views of interest for this research, the A2C and
+A4C segmentation models were trained on 200 and 177 manually annotated images
+respectively, generating a classification mask with four and six classes
+respectively. For the A2C model classifying into either background, left atrial
+blood pool, left ventricular myocardium or left ventricular blood pool. For the
+A4C model classifying into the same classes as the A2C with the addition of the
+right ventricular blood pool and the right atrium. The models converged to
+Intersection over Union (IoU, a common overlap metric for image segmentation
+tasks) values between 0.72 - 0.91 for structures of interest. \newline
+
+The third stage of the pipeline (applications) offers several modular
+"applications" each producing some sort of analysis of cardiac structure and
+function. The key application of interest for this project measures LV volume
+(at both systole and diastole) and LVEF. With the newly segmented A2C and A4C
+cines (of which there are generally multiple in each study) and the area length
+method (whichs models the LV as a cone, to provide an approximation of volume)
+the application produces an estimate of LV volume at each frame of the cine, for
+each cine. A peak finding algorithm using a sliding window approach marks marks
+the ES and ED frames of each cine by simply identifying minima and maxima. With
+the now computed left ventricular end systolic and end diastolic volumes
+(LVESV/LVEDV) the LVEF can be calculated using the standard formula: \newline
+
+\begin{equation}
+        LVEF = \frac{LVEDV - LVESV}{LVEDV} \times 100
+\end{equation} \newline
+
+The LV volume and LVEF application reports the average LVEF for each study,
+across multiple views. The Median Absolute Deviation (MAD) for LVEF came out to
+5.3\% over 3101 studies. \newline
+
+Zhang et al. takes an interesting approach, which leans on the strengths of automated
+measurement techniques. In typical clinical practice, a reading clinician would
+only take 1 or 2 measurements of LVEF - but would take in to account factors
+such as image quality and if there was a well defined myocardium - blood pool
+boundary before taking a measurement. Additionally in modern practice clinicians
+will conventionally use a more sophisticated technique to calculate the LV
+volume at a given point in time - commonly the Simpsons Biplane method - which
+simultaneously uses information from A2C and A4C views of the heart and
+constructs a substantially more accurate geometric model of the heart. \newline
+
+Accuracy improving techniques as described are readily employed as a manual
+approach, but are non-trivial when developing an automated approach. \newline
+
+The complimentary approach Zhang et al. addresses this as they segment every
+frame in the sequence and compute less accurate volumes along every single frame
+gives a sampling advantage as the automated approach can average over a
+significantly greater number of samples than the manual approach. The logic here
+being that having a high number of lower quality samples produces a superior
+result than one or two high quality samples. \newline
+
+In this approach however, and in most approaches found in literature, the
+analysis step (where interesting information is produced) is entirely reliant on
+accurate segmentations and view classifications in earlier steps. More
+sophisticated approaches have been developed, such as those using 3D CNNs
+\cite{ouyangEchoNetDynamicLargeNew} however 3D CNN approaches have substantially
+more free variables (parameters) to train, and require significantly larger
+datasets in a field where datasets are already constrained. \newline
+
+A summary for work in the space of deep learning for echocardiography can be
+simply summarised as requiring improved segmentation models. \newline
+
+\subsection{Conditional Generative Adversarial Networks}
+
+After their introduction by Goodfellow et al. in 2014, GANs have made
+substantial advancements in the deep learning. The focus of this literature
+review is not on GANs broadly, but on the utility of the subfield of Conditional
+GANs used to synthesise echocardiography images. \newline
+
+Abdi et al. is the only substantial body of work in this space, where they
+demonstrated that a by using a encoder-decoder generator model, and patch-based
+discriminator model.
+
+\subsection{GAN-enhanced Image Segmentation}
+
+section
+
+\subsection{Summary}
+
+final
