@@ -155,9 +155,33 @@ augmentation for the training of encoder-decoder neural networks, given the
 primary endpoint of enhancing segmentation accuracy it would be fair to include
 other segmentation techniques utilising GANs. \newline
 
-Xue et al. \cite{zhangSegGANSemanticSegmentation2018} developed a novel pipeline
-with the key innovation of a multi-scale 
+Xue et al. \cite{zhangSegGANSemanticSegmentation2018} developed a novel approach
+to the GAN architecture called SeGAN where they replaced the generator (G) model with a segmentor (S) model,
+and the discriminator (D) with a critic (C). They also introduced a novel
+multiscale feature loss function, which during training time S is aiming to
+minimize, and C is aiming to maximize. \newline
+
+The principle innovation in this work is the proposed multiscale objective loss
+function, which measures the difference between the generated segmentation and ground
+truth segmentation at multiple layers within the critic. The advantage of this
+is forcing the critic to learn higher-order features that capture actual spatial
+relationships between the pixels, rather than learning a trivial solution which
+a conventional GAN would - the binary "real" or "fake" classification. \newline
+
+This brief review of a pivotal body of work is to give wider context to the
+space of medical imaging GANs. There aren't immediate justifications of
+superiority of the GAN approach, although superior segmentation accuracy
+measurements were recorded on several datasets. One interesting qualitative
+result of the study was the comment that their segmentations appeared smoother,
+potentially of interest in some medical imaging problems. \newline
 
 \subsection{Summary}
 
-final
+In summary, prior work in the space has convincingly demonstrated that a deep
+learning approach can successfully automate the measurement of clinical indices
+of an echocardiography study. \newline
+
+What is glaringly obvious from the bulk of the approaches is the as-yet unsolved
+problem of segmenting the anatomical features from the echocardiography images
+is the rate limiting factor. Superior segmentations would unlock the ability to
+take more accurate and precise measurement of clinical indices. \newline
