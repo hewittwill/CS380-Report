@@ -11,32 +11,33 @@ LVEF requires the manual segmentation of the left ventricle at both end-systole
 (ES) and end-diastole (ED). Semi-automated solutions for this do already exist,
 but have limited performance in the clinical workflow. \newline
 
-A typical echocardiography study contains 20 - 30 cines (2D + time) stored in
+A typical echocardiography study contains 20 - 30 video clips (cines) stored in
 the DICOM format (a standard medical imaging format). Inside each DICOM file is
 standard JPEG pixel data which can be readily extracted by image processing
 libraries. Each cine is captured of a different angle, known as a view, of the
 heart looking at different points of clinical interest. Two of the most common
 views, Apical 2 Chamber (A2C) and Apical 4 Chamber (A4C) are commonly used to
 assess LV function and measure clinical indices such as LVEF. In this work we
-focus the Apical 2 Chamber view.\newline
+focus on the Apical 2 Chamber view.\newline
 
 \subsection{Convolutional Neural Networks}
 
 Recent work has shown that an automated pipeline using convolutional neural
 networks (CNNs) are able to extract standard clinical indices to near human
-level accuracy \cite{zhangFullyAutomatedEchocardiogram2018}. Almost all the
-prior work in the space is reliant on encoder-decoder architecture CNNs to
-automate the segmentation of cardiac structures from echocardiography images.
-Subsequently the entire analysis pipeline is sensitive to the performance of the
-underlying encoder-decoder neural network. \newline
+level accuracy \cite{zhangFullyAutomatedEchocardiogram2018}, with a median
+absolute deviation (MAD) of 5.3\%. Almost all the prior work in the space is
+reliant on encoder-decoder architecture CNNs to automate the segmentation of
+cardiac structures from echocardiography images. Subsequently, the entire
+analysis pipeline is sensitive to the performance of the underlying
+encoder-decoder neural network. \newline
 
-Encoder-decoder neural networks for semantic segmentation maps an input image to
-a segmentation mask, labelling each pixel within the image to one of any number
-of pre-defined segmentation classes. The encoder half of the neural network maps
-the high-dimension input image, to a lower-dimension latent representation of
-the image, similar to a convolutional neural network being used for
-classification. Rather than using fully-connected layers to then arrive at an
-end classification, the decoder half of the neural network maps the latent
+Encoder-decoder neural networks, for semantic segmentation, maps an input image
+to a segmentation mask, labelling each pixel within the image to one of any
+number of pre-defined segmentation classes. The encoder half of the neural
+network maps the high-dimension input image to a lower-dimension latent
+representation of the image, similar to a convolutional neural network used for
+classification. Rather than using fully-connected layers to obtain end
+classification, the decoder half of the neural network maps the latent
 representation of the image, to a segmentation map labelling each pixel to a
 segmentation class. \newline
 
@@ -45,23 +46,22 @@ segmentation class. \newline
 Since their introduction in 2014 by Goodfellow et al.
 \cite{goodfellowGenerativeAdversarialNets2014}, Generative Adversarial Networks
 (GANs) have made significant advances in a wide variety of deep learning problem
-domains. GANs are made up of two separate neural networks - the generator, and
+domains. GANs are made up of two distinct neural networks, the generator and
 the discriminator. The generator takes a random variable "seed" and generates a
 fake sample. The discriminator classifies the input sample (coming from either
-the generator, or the ground truth dataset) into either "real" or "fake."
+the generator, or the ground truth dataset) into either real or fake.
 \newline
 
 During training, the weights of both the generator and the discriminator are
-updated simultaneously until the generator is generating samples that the
-discriminator can no longer distinguish from real and fake. In this way, the
+updated simultaneously until the generator creates samples that the
+discriminator can no longer distinguish between real and fake. In this way, the
 generator of a GAN learns to model a probability distribution - a more obvious
 example coming from the field of image generation. If one imagines there is a
 probability distribution over the set of all labrador images, then the
-discriminator would be learning to discriminate between the real labrador images
-from the training dataset, and the fake ones being synthesised by the generator.
-In early iterations the synthesised images from the generator would have little
-resemblance to an image of a labrador, but in later epochs the generator would
-produce highly realistc images of a labrador. \newline
+discriminator learns to discriminate between real labrador images
+from the training dataset, and fake ones synthesised by the generator.
+In early epochs, the synthesised images from the generator would have little
+resemblance to an image of a labrador, but in later epochs the generator produces highly realistc images of a labrador. \newline
 
 A subfield of GANs known as Conditional Generative Adversarial Networks (C-GANs)
 have more direct utility in the field of image segmentations. C-GANs are largely
@@ -71,21 +71,24 @@ condition or parameter rather than a random variable seed input. \newline
 In the context of this project, C-GANs have been utilised by Abdi et al.
 \cite{abdiGANenhancedConditionalEchocardiogram2019} to generate photorealistic
 echocardiogram frames, from a ground truth segmentation map. The generator of
-the GAN in this context can be viewed as the transferfunction mapping the set of
+the GAN in this context can be viewed as the transfer function mapping the set of
 ground-truth segmentation masks, to the set of photorealistic echocardiography
 images. This can be described as: \newline
 
 \begin{equation}
-    G(p|m) = X_{synth} \text{, where $X_{synth}$ is the probable photorealistic image}
+    G(M) = X_{synth}
 \end{equation} \newline
+
+Where $G(m)$ is the generator model, with condition $M$, the segmentation mask.
+$X_{synth}$ is the synthesised photorealistic image.\newline 
 
 \subsection{Hypothesis}
 
 For this body of work, we aim to establish whether C-GANs can be used as a form
 of data augmentation to enhance the segmentation of echo frames using
-encoder-decoder convolutional neural networks. First we establish baseline for
+encoder-decoder convolutional neural networks. Firstly, we establish baseline for
 the segmentation of echo frames using the well known encoder-decoder neural
-network U-Net \cite{ronneberger2015u}. Second we validate previous work that a C-GAN can be used to
+network U-Net \cite{ronneberger2015u}. Secondly, we validate previous work that a C-GAN can be used to
 generate photorealistic ultrasound images from a ground truth segmentation map.
 Finally, we then compare the effect on segmentation accuracy by using either
 image-processing data augmentation or C-GAN synthesised images as a form of data
