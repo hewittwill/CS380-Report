@@ -1,0 +1,23 @@
+\subsection{Segmentation of Echocardiography Frames}
+
+For the first part of this body of work, we develop a baseline segmentation
+accuracy when segmenting echo frames using an encoder-decoder neural network.
+For our work, we used the well-known U-Net architecture. \newline
+
+For all the experiments in this work, we used the CAMUS datast
+\cite{leclercDeepLearningSegmentation2019} which, in addition to providing
+baseline segmentation scores using the UNet and UNet++ architecture was also the
+dataset behind the C-GAN work of Abdi et al. All of the experiments were run
+using Python 3 and TensorFlow 2.0.0.\newline
+
+The CAMUS dataset was downloaded and converted from .MHD/.RAW format to a NumPy
+array using the SimpleITK library for Python. Apical 2 Chamber (A2C) frames at
+ES and ED (only the ground truth for ES and ED is provided) were extracted,
+resampled to 256x256 and pixel values normalised to 0-1. All preprocessing steps
+were carried out using NumPy and OpenCV, before being saved as a NumPy array to
+avoid re-processing. Ground Truth (GT) segmentation maps were saved in one-hot
+encoded style, also using NumPy arrays for consistency. \newline
+
+\subsection{Validating C-GANs for Echocardiography Frames}
+
+\subsection{Data Augmentation for the Segmentation of Echocardiography Frames}
