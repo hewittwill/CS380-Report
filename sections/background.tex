@@ -86,10 +86,12 @@ $X_{synth}$ is the synthesised photorealistic image.\newline
 
 For this body of work, we aim to establish whether C-GANs can be used as a form
 of data augmentation to enhance the segmentation of echo frames using
-encoder-decoder convolutional neural networks. Firstly, we establish baseline for
-the segmentation of echo frames using the well known encoder-decoder neural
-network U-Net \cite{ronneberger2015u}. Secondly, we validate previous work that a C-GAN can be used to
-generate photorealistic ultrasound images from a ground truth segmentation map.
-Finally, we then compare the effect on segmentation accuracy by using either
-image-processing data augmentation or C-GAN synthesised images as a form of data
-augmentation, on the original encoder-decoder segmentation neural network. \newline
+encoder-decoder convolutional neural networks. Firstly, we establish baseline
+for the segmentation of echo frames using the well known encoder-decoder neural
+network U-Net \cite{ronneberger2015u}. Secondly, we validate previous work that
+a C-GAN can be used to generate photorealistic ultrasound images from a ground
+truth segmentation map. Finally, we then compare the effect on segmentation
+accuracy by using either elastic deformation augmentation directly applied to
+the training images, or applied to the segmentation masks and then generating
+photorealistic images using a C-GAN, on the original encoder-decoder
+segmentation neural network. \newline

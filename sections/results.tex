@@ -1,0 +1,28 @@
+After some hyperparameter tuning, our baseline U-Net model achieved IoU scores
+between 0.7-0.9 for structures of interest (i.e. myocardium, blood
+pool and atrium). Best baseline results were achieved with frozen encoder
+weights, and convergence criteria was reached after 50 epochs.  \newline
+
+Hyperparameters were unchanged when testing the different augmentation methods,
+as the objective was not to achieve the highest possible segmentation accuracy -
+but demonstrate if the augmentation techniques had a significant effect on
+segmentation accuracy. For the real dataset, convergence was reached after 30
+epochs and IoU scores ranged from 0.8-0.9. For the generated dataset,
+convergence was reached after 80 epochs and IoU scores ranged from 0.7-0.8. A
+table of results is provided below.
+\newline
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|}
+    \hline
+    \textbf{Augmentation}         & \textbf{mIoU} \\ \hline
+    None                          & 0.6           \\ \hline
+    Real Elastic Deformation      & 0.9           \\ \hline
+    Generated Elastic Deformation & 0.8           \\ \hline
+    \end{tabular}
+\end{table}
+
+This gives strong evidence that using a pre-trained generator gives superior
+data augmentation and segmentation accuracy than applying data augmentation
+simply to the training images. \newline
