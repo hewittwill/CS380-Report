@@ -16,22 +16,32 @@ resampled to 256x256 and pixel values normalised to 0-1. All preprocessing steps
 were carried out using NumPy and OpenCV \newline
 
 The final dataset to establish baseline performance consisted of 900 samples,
-split 80:10:10 for train:test:validation (810, 90, 90 samples respectively). \newline
+split 80:10:10 for train:test:validation (720, 90, 90 samples respectively). \newline
 
 We built a U-Net encoder-decoder segmentation neural network that used the
 pretrained (on ImageNet) VGG-16 model from Keras. The last convolution block was
 dropped, and the weights for the encoder frozen (this was saved as a
 hyperparameter). Transpose convolutional layers were used for upsampling, and
 skip connections were additionally used. The overall model architecture can be
-seen in Figure 1. \newline
+seen in Figure \ref{fig:unet}. \newline
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\textwidth]{figures/unet.png}
+    \caption{U-Net architecture used in this study}
+    \label{fig:unet}
+\end{figure}
+
 
 For training the Adam optimizer was used, with a base learning rate of 1e-5.
 Categorical Cross Entropy (CCE) was used for a loss function. Dropout was
 applied in the bottleneck layers. The model was trained on a batch size of 16.
-Convergence criteria was defined as an absolute difference between training and
-validation loss of $>$10\% of training loss \newline
+Convergence criteria was defined as $>$5\% increase in the moving average of
+validation loss. \newline
 
-
+The model was evaluated on a seperate test dataset, which was not encountered
+during training time. There was 90 samples in the test dataset. \newline
 
 \subsection{Validating C-GANs for Echocardiography Frames}
 
@@ -70,3 +80,7 @@ same hyperparameters and convergence criteria. This was enforced to give a good
 objective view of the effect of the different augmentation methods, and to
 isolate the effect on the accuracy of the model to just the independent variable
 (type of data augmentation). \newline
+
+The models were both tested on the same test dataset as the baseline, which was
+not encountered during training time. No elastic deformations were applied to
+the testing dataset. 
