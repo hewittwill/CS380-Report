@@ -25,10 +25,10 @@ focus on the Apical 2 Chamber view.\newline
 Recent work has shown that an automated pipeline using convolutional neural
 networks (CNNs) are able to extract standard clinical indices to near human
 level accuracy \cite{zhangFullyAutomatedEchocardiogram2018}, with a median
-absolute deviation (MAD) of 5.3\%. Almost all the prior work in the space is
-reliant on encoder-decoder architecture CNNs to automate the segmentation of
-cardiac structures from echocardiography images. Subsequently, the entire
-analysis pipeline is sensitive to the performance of the underlying
+absolute deviation (MAD) of 5.3\% when measuring LVEF. Almost all the prior work
+in the space is reliant on encoder-decoder architecture CNNs to automate the
+segmentation of cardiac structures from echocardiography images. Subsequently,
+the entire analysis pipeline is sensitive to the performance of the underlying
 encoder-decoder neural network. \newline
 
 Encoder-decoder neural networks, for semantic segmentation, maps an input image
@@ -46,10 +46,10 @@ segmentation class. \newline
 Since their introduction in 2014 by Goodfellow et al.
 \cite{goodfellowGenerativeAdversarialNets2014}, Generative Adversarial Networks
 (GANs) have made significant advances in a wide variety of deep learning problem
-domains. GANs are made up of two distinct neural networks, the generator and
-the discriminator. The generator takes a random variable "seed" and generates a
-fake sample. The discriminator classifies the input sample (coming from either
-the generator, or the ground truth dataset) into either real or fake.
+domains. GANs are made up of two distinct neural networks, the generator and the
+discriminator. The generator takes a random variable "seed" and generates a fake
+sample. The discriminator classifies the input sample (coming from either the
+generator, or the ground truth dataset) into either real or fake.
 \newline
 
 During training, the weights of both the generator and the discriminator are
@@ -58,40 +58,58 @@ discriminator can no longer distinguish between real and fake. In this way, the
 generator of a GAN learns to model a probability distribution - a more obvious
 example coming from the field of image generation. If one imagines there is a
 probability distribution over the set of all labrador images, then the
-discriminator learns to discriminate between real labrador images
-from the training dataset, and fake ones synthesised by the generator.
-In early epochs, the synthesised images from the generator would have little
-resemblance to an image of a labrador, but in later epochs the generator produces highly realistc images of a labrador. \newline
+discriminator learns to discriminate between real labrador images from the
+training dataset, and fake ones synthesised by the generator. In early epochs,
+the synthesised images from the generator would have little resemblance to an
+image of a labrador, but in later epochs the generator produces highly realistic
+images of a labrador. This is modelled in Equation 1.\newline
 
 A subfield of GANs known as Conditional Generative Adversarial Networks (C-GANs)
-have more direct utility in the field of image segmentations. C-GANs are largely
+have more direct utility in the field of image segmentation. C-GANs are largely
 similar to a base GAN model, except the input of the generator is a specific
-condition or parameter rather than a random variable seed input. \newline
+condition or parameter rather than a random variable seed input. Thus the output
+is \textbf{\emph{conditional}} on the input tensor. \newline
 
 In the context of this project, C-GANs have been utilised by Abdi et al.
 \cite{abdiGANenhancedConditionalEchocardiogram2019} to generate photorealistic
 echocardiogram frames, from a ground truth segmentation map. The generator of
-the GAN in this context can be viewed as the transfer function mapping the set of
-ground-truth segmentation masks, to the set of photorealistic echocardiography
-images. This can be described as: \newline
+the GAN in this context can be viewed as the transfer function mapping the set
+of ground-truth segmentation masks, to the set of photorealistic
+echocardiography images. This can be described as: \newline
 
 \begin{equation}
-    G(M) = X_{synth}
+    G_{P|C}(c) = p
 \end{equation} \newline
 
-Where $G(m)$ is the generator model, with condition $M$, the segmentation mask.
-$X_{synth}$ is the synthesised photorealistic image.\newline 
+Where $G$ is the generator trained by the C-GAN, $C \in
+[0,1]^{256\times256\times4}$ (the conditional input) and $P \in
+\mathbb{R}^{256\times256}$ (the photorealistic output) and $p \in P, c \in
+C$.\newline 
+
+\subsection{Elastic Deformation}
+
+Elastic Deformation is an image processing technique which deforms input images
+using a coarse grid, displaces the grid using either a random or deterministic
+approach, then interpolates surrounding pixels to maintain a contiguous image.
+\newline
+
+The use of elastic deformation has been demonstrated to give superior results
+when using an encoder-decoder neural network to segment biomedical images
+\cite{ronneberger2015u}. However there is an intuitive disadvantage in the
+echocardiography case where it is desireable to maintain the integrity of the
+echocardiography window. The effect of this is described in the Conclusion and Figure
+\ref{fig:conditional}. \newline
 
 \subsection{Hypothesis}
 
-For this body of work, we aim to establish whether C-GANs can be used as a form
-of data augmentation to enhance the segmentation of echo frames using
-encoder-decoder convolutional neural networks. Firstly, we establish baseline
-for the segmentation of echo frames using the well known encoder-decoder neural
-network U-Net \cite{ronneberger2015u}. Secondly, we validate previous work that
-a C-GAN can be used to generate photorealistic ultrasound images from a ground
-truth segmentation map. Finally, we then compare the effect on segmentation
-accuracy by using either elastic deformation augmentation directly applied to
-the training images, or applied to the segmentation masks and then generating
-photorealistic images using a C-GAN, on the original encoder-decoder
-segmentation neural network. \newline
+For this body of work, we aim to establish whether C-GANs can improve the use of
+elastic deformation as data augmentation, to eventually enhance the segmentation
+of echo frames using encoder-decoder convolutional neural networks. Firstly, we
+establish baseline results for the segmentation of echo frames using the well known
+encoder-decoder neural network U-Net \cite{ronneberger2015u}. Secondly, we
+validate previous work that a C-GAN can be used to generate photorealistic
+ultrasound images from a ground truth segmentation map. Finally, we then compare
+the effect on segmentation accuracy by using either elastic deformation
+augmentation directly applied to the training images, or applied to the
+segmentation masks and then generating photorealistic images using a C-GAN, on
+the original encoder-decoder segmentation neural network. \newline

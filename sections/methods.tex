@@ -7,7 +7,8 @@ For our work, we used the well-known U-Net architecture. \newline
 For all the experiments in this work, we used the CAMUS datast
 \cite{leclercDeepLearningSegmentation2019} which was also the dataset behind the
 C-GAN work of Abdi et al. All of the experiments were run using Python 3 and
-TensorFlow 2.0.0.\newline
+TensorFlow 2.1.0. All of our code is available on GitHub at
+https://github.com/hewittwill/CS380 \newline
 
 The CAMUS dataset was downloaded and converted from .MHD/.RAW format to a NumPy
 array using the SimpleITK library for Python. Apical 2 Chamber (A2C) frames at
@@ -26,19 +27,21 @@ skip connections were additionally used. The overall model architecture can be
 seen in Figure \ref{fig:unet}. \newline
 
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{figures/unet.png}
-    \caption{U-Net architecture used in this study}
+    \caption{U-Net architecture used in this study, Credit: Ronneberger et al. \cite{ronneberger2015u}}
     \label{fig:unet}
 \end{figure}
 
 
 For training the Adam optimizer was used, with a base learning rate of 1e-5.
-Categorical Cross Entropy (CCE) was used for a loss function. Dropout was
-applied in the bottleneck layers. The model was trained on a batch size of 16.
-Convergence criteria was defined as $>$5\% increase in the moving average of
-validation loss. \newline
+Weighted Categorical Cross Entropy (WCCE) was used for a loss function, the
+weighting applied to each class was roughly proportional to its prevalence in
+the image. Dropout was applied in the bottleneck layers, baseline dropout
+threshold of 0.5. The model was trained on a batch size of 16. Convergence
+was subjectively defined as when validation loss began increasing
+over training loss. \newline
 
 The model was evaluated on a seperate test dataset, which was not encountered
 during training time. There was 90 samples in the test dataset. \newline
@@ -50,7 +53,7 @@ would be able to generate photorealistic echocardiography frames from a
 segmentation mask input condition. \newline
 
 We used just ED frames from A2C views in the CAMUS dataset, which were
-preprocessed similarly to in the segmentation step, resamplwed to 256x256 and
+preprocessed similarly to in the segmentation step, resampled to 256x256 and
 normalised to have pixel values from [0-1]. \newline
 
 We used the same framework as Abdi et al. to train a C-GAN on ED frames of the
@@ -64,10 +67,10 @@ batch size was set to 8.\newline
 
 To compare the effect on segmentation accuracy for our two data augmentation
 techniques, we created two new dataset labelled "real" and "generated". Real
-contained the original CAMUS training dataset with elastic deformation
-augmentations applied directly images. Generated contained synthetic images
-after deforming the ground truth segmentation map, and passing the deformed
-ground truth image to the generator trained in 3.2.
+contained the original CAMUS training dataset with elastic deformation applied
+directly to images and their segmentation mask. Generated contained synthetic
+images produced by passing the same deformed segmentation mask as in the real
+dataset, to the generator trained in 3.2.
 \newline
 
 Elastic deformations for both datasets were created using the elasticdeform
@@ -76,10 +79,10 @@ as a deformed counterpart to each image giving double the original dataset size.
 each dataset contained 1800 images. \newline
 
 Two seperate U-Net models were trained using the same framework as 3.1, with the
-same hyperparameters and convergence criteria. This was enforced to give a good
-objective view of the effect of the different augmentation methods, and to
-isolate the effect on the accuracy of the model to just the independent variable
-(type of data augmentation). \newline
+same hyperparameters and number of epochs as the baseline. This was enforced to
+give a good objective view of the effect of the different augmentation methods,
+and to isolate the effect on the accuracy of the model to just the independent
+variable (type of data augmentation). \newline
 
 The models were both tested on the same test dataset as the baseline, which was
 not encountered during training time. No elastic deformations were applied to

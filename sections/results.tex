@@ -1,25 +1,25 @@
-After some hyperparameter tuning, our baseline U-Net model achieved IoU scores
-between N-N for structures of interest (i.e. myocardium, blood
-pool and atrium). Best baseline results were achieved with frozen encoder
-weights, and convergence criteria was reached after 50 epochs.  \newline
+After hyperparameter tuning, our baseline U-Net model achieved IoU scores
+between 0.69-0.78 for structures of interest (LV Myocardium, LV Cavity and Left
+Atrium - LA). Best baseline results were achieved with frozen encoder weights,
+and convergence was marked at 50 epochs.  \newline
 
 Hyperparameters were unchanged when testing the different augmentation methods,
 as the objective was not to achieve the highest possible segmentation accuracy -
 but demonstrate if the augmentation techniques had a significant effect on
-segmentation accuracy. For the real dataset, convergence was reached after 30
-epochs and IoU scores ranged from N-N. For the generated dataset,
-convergence was reached after 80 epochs and IoU scores ranged from N-N. A
-table of results is provided below.
+segmentation accuracy. Both the real and generated models were trained for 50
+epochs. For the real dataset IoU scores ranged from 0.72-0.82. For the generated
+dataset IoU scores ranged from 0.72-0.80. A table of results is provided below.
 \newline
 
-\begin{table}[h]
+\begin{table}[H]
     \centering
-    \begin{tabular}{|c|c|}
-    \hline
-    \textbf{Augmentation}         & \textbf{mIoU} \\ \hline
-    None                          & 0.6           \\ \hline
-    Real Elastic Deformation      & 0.9           \\ \hline
-    Generated Elastic Deformation & 0.8           \\ \hline
+    \begin{tabular}{c|c|l|l|}
+        \cline{2-4}
+        \multicolumn{1}{l|}{}                       & \multicolumn{3}{c|}{\textbf{Intersection over Union}}                     \\ \hline
+        \multicolumn{1}{|l|}{\textbf{Augmentation}} & LA                   & \multicolumn{1}{c|}{LVM} & \multicolumn{1}{c|}{LV} \\ \hline
+        \multicolumn{1}{|c|}{None}                  & 0.69 ± 0.01          & 0.68 ± 0.01              & 0.78 ± 0.01             \\ \hline
+        \multicolumn{1}{|c|}{Real}                  & 0.74 ± 0.02          & \textbf{0.72 ± 0.01}     & \textbf{0.82 ± 0.01}    \\ \hline
+        \multicolumn{1}{|c|}{Generated}             & \textbf{0.75 ± 0.01} & \textbf{0.72 ± 0.01}     & 0.80 ± 0.01             \\ \hline
     \end{tabular}
 \end{table}
 

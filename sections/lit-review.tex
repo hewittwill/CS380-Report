@@ -13,7 +13,7 @@ distinct stages - view classification, segmentation and applications. \newline
 The first stage of the pipeline (view classification) classifies each cine in
 the echocardiography study into 1 of 22 different views. Using a common CNN
 architecture known as VGG-16, 10 random, downsized (224 x 224), grayscaled, and
-normalied (pixel values ranging from 0-1) frames are extracted from each cine
+normalised (pixel values ranging from 0-1) frames are extracted from each cine
 and fed into the neural network, which returns a 22x1 probability
 vector with each entry referring to the probability of the cine being a given
 view. During validation this model achieved a 99\% accuracy for classifying each
@@ -25,8 +25,8 @@ view of interest. Zhang et al. consider Apical 2 Chamber (A2C), Apical 4 Chamber
 (A4C), Parasternal Short Axis (PSAX) and Parasternal Long Axis (PLAX) views of
 interest. What view is of interest is typically driven by the clinical question,
 in this case being assessing LV function. Having identified the views that are
-of interet in the view classification stage, the segmentation stage uses four
-seperately trained encoder-decoder neural networks, with the same common
+of interest in the view classification stage, the segmentation stage uses four
+separately trained encoder-decoder neural networks, with the same common
 encoder-decoder architecture known as U-Net. Using the same downsampled,
 normalised images as the view classification step the segmentation models take
 in a frame, and return a classification mask classifying each pixel into one of
@@ -36,7 +36,7 @@ respectively, generating a classification mask with four and six classes
 respectively. The A2C model classifies each pixel into either background, left atrial
 blood pool, left ventricular myocardium or left ventricular blood pool. The
 A4C model classifying into the same classes as the A2C with the addition of the
-right ventricular blood pool and the right atrium. The models converged to
+right ventricular blood pool and the right atrium. The models converged with
 Intersection over Union (IoU, a common overlap metric for image segmentation
 tasks) values between 0.72 - 0.91 for structures of interest. \newline
 
@@ -45,12 +45,13 @@ applications, each producing some sort of analysis of cardiac structure and
 function. The key application of interest for this project measures LV volume
 (at both systole and diastole) and LVEF. With the newly segmented A2C and A4C
 cines (of which there are generally multiple in each study) and the area length
-method (whichs models the LV as a cone, to provide an approximation of volume)
+method (which models the LV as a cone, to provide an approximation of volume)
 the application produces an estimate of LV volume at each frame of the cine, for
 each cine. A peak finding algorithm using a sliding window approach marks marks
-the ES and ED frames of each cine by simply identifying minima and maxima. With
-the now computed left ventricular end systolic and end diastolic volumes
-(LVESV/LVEDV) the LVEF can be calculated using the standard formula: \newline
+the ES and ED frames of each cine by simply identifying minima and maxima within
+the sliding windows. With the now computed left ventricular end systolic and end
+diastolic volumes (LVESV/LVEDV) the LVEF can be calculated using the standard
+formula: \newline
 
 \begin{equation}
         LVEF = \frac{LVEDV - LVESV}{LVEDV} \times 100
@@ -73,8 +74,8 @@ Accuracy improving techniques as described are readily employed as a manual
 approach, but are non-trivial when developing an automated approach. \newline
 
 The complimentary approach taken by Zhang et al. addresses it as they segment
-every frame in the sequence and compute less accurate volumes along every single
-frame gives a sampling advantage as the automated approach can average over a
+every frame in the sequence, then compute less accurate volumes along every single
+frame. This gives a sampling advantage as the automated approach can average over a
 significantly greater number of samples than the manual approach. The reasoning
 behind this being that having a high number of lower quality samples produces a
 superior result than one or two high quality samples. \newline
@@ -88,14 +89,15 @@ more free variables (parameters) to train, and require significantly larger
 datasets in a field where datasets are already constrained. \newline
 
 A summary for work in the space of deep learning for echocardiography can be
-simply summarised as requiring improved segmentation models. \newline
+described as entirely reliant on segmentation models. \newline
 
 \subsection{Conditional Generative Adversarial Networks}
 
 After their introduction by Goodfellow et al. in 2014, using GANs people have
-made substantial advancements in the deep learning. The focus of this literature
-review is not on GANs broadly, but on the utility of the subfield of Conditional
-GANs used to synthesise echocardiography images. \newline
+made substantial advancements in a range of deep learning problems. The focus of
+this literature review is not on GANs broadly, but on the utility of the
+subfield of Conditional GANs used to synthesise echocardiography images.
+\newline
 
 The study by Abdi et al. is the only substantial body of work in this space,
 where they demonstrated that a GAN can be trained to produce photorealistic
@@ -120,14 +122,14 @@ the loss function respectively.\newline
 
 \begin{equation}
         \mathcal{L}_{cGAN} = \mathbb{E}_{x,y}[(1-D(y,x)^{2})] + \mathbb{E}_{x}[D(y,G(y))^2]
-\end{equation}
+\end{equation} \newline
 
 $y$ and $x$ refer to the input condition and the photorealistic image
 respectively. $D(y,x)$ refers to the patch-based discriminator and $G(y)$
 refers to the encoder-decoder generator model. \newline
 
 The study by Abdi et al. demonstrated that motivating results can be generated by using
-simple but powerful generator and discriminator models, all of which being well
+simple but powerful generator and discriminator models, both of which being well
 understood in literature. The key limitation of their study was their principal
 focus on ED frames, meaning the heart is at its largest size (during the
 filling, pre-contraction) of the cardiac cycle. This (deliberately) limited the
@@ -135,15 +137,15 @@ distribution modelled by the GAN to that of just ED frames. This does make for a
 potentially more physiologically interesting model however, as it is a
 reasonable assumption that the size of the LV varies linearly at ED and ES
 between patients. Whereas intermediary frames (or the change over time between
-intermediary frames) is a more complex phenomena. This forseeably opens up
+intermediary frames) is a more complex phenomena. This foreseeably opens up
 interesting further analysis. \newline
 
 Other limitations include simply performing qualitative analysis of the output
-of the generative model. Although interesting for this case, pixelwise
-difference metrics (which was a term of their loss function) would potentially
-have been an interesting analysis between the ground truth and generated test
-images. There was also no analysis on the generator models sensitivity to
-changes of the boundary of the segmentations. \newline
+of the generative model. Although interesting in this case, a quantitative
+analysis pixelwise difference metrics (which was a term of their loss function)
+would potentially have been an interesting analysis between the ground truth and
+generated test images. There was also no analysis on the generator models
+sensitivity to changes of the boundary of the segmentations. \newline
 
 Limitations aside, the study by Abdi et al. has layed the groundwork for both this body of
 work and future works in the space. \newline
@@ -164,11 +166,11 @@ which minimizes S and maximizes C during training.
 
 The principle innovation in this work is the proposed multiscale objective loss
 function, which measures the difference between the generated segmentation and
-the ground
-truth segmentation at multiple layers within the critic. The advantage of this
-is forcing the critic to learn higher-order features that capture actual spatial
-relationships between the pixels, rather than learning a trivial solution which
-a conventional GAN would - the binary "real" or "fake" classification. \newline
+the ground truth segmentation at multiple layers within the critic. The
+advantage of this is forcing the critic to learn higher-order features that
+capture actual spatial relationships between the pixels, rather than learning a
+trivial solution which a conventional GAN would - the binary "real" or "fake"
+classification. \newline
 
 This brief review of a pivotal body of work is to give wider context to the
 space of medical imaging GANs. There aren't immediate justifications of
@@ -184,5 +186,5 @@ learning approach can successfully automate the measurement of clinical indices
 of an echocardiography study. \newline
 
 What is apparent that in the bulk of the approaches is the segmentation accuracy
-is the rate limiting factor. Superior segmentations would enable more accurate
+is the rate limiting factor. Improved segmentations would enable more accurate
 and precise measurement of clinical indices. \newline

@@ -8,12 +8,12 @@ The model architecture was intentionally not optimised specifically for the
 problem domain, beyond a base-level accuracy. The logic behind this being that
 the effect of data augmentation on a very-well architected network, which would
 already achieve a very high baseline accuracy, may not be particularly
-significant. However in the general case, potentially when segmenting noiser
+significant. However in the general case, potentially when segmenting noisier
 images or a higher resolution modality with more classes, where baseline
 accuracy is lower, the utility would be more evident. Therefore the main
 hypothesis of this study, whether generated images were superior to simply
-elastically deformed images for data augmentation is disproven to a degree.
-Further work in the area would be needed to establish this as a baseline rule.
+elastically deformed images for data augmentation is disproven.
+Further work in the area would be needed to establish this as a rule.
 \newline
 
 The end results of the study do not align with what intuitively the endpoints
@@ -21,7 +21,7 @@ should have been however. See Figure \ref{fig:conditional} below, where it is cl
 generated image has a closer approximation to a real echocardiography frame (as
 the ultrasound window has not also been deformed). \newline
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{figures/conditional.png}
     \caption{Left - Deformed conditional input to GAN, Middle - Real deformed image, Right - Fake generated image from deformed condition}
@@ -49,27 +49,32 @@ set of photorealistic representations, or is the generator learning the
 conditional probability distribution of the likely photorealistic image given an
 input condition? \newline
 
-We model the first interpretation in Figure \ref{eqn:txfn}. The first
-interpretation would be the superior and far more general intepretation of how
-the generator is learning within the C-GAN framework. \newline 
+We model the first interpretation in Equation 4. The first interpretation would
+be the superior and far more general interpretation of how the generator is
+learning within the C-GAN framework. \newline 
 
-\begin{figure}[h]
-    \[G: C \rightarrow P\]
-    \caption{Generator as a transfer function, where $G$ is the generator trained by the C-GAN, $C \in [0,1]^{256\times256\times4}$ (the conditional input) and $P \in \mathbb{R}^{256\times256}$ (the photorealistic output)}
-    \label{eqn:txfn}
-\end{figure}
+\begin{equation}
+    G: C \rightarrow P
+\end{equation} \newline
+
+Generator as a transfer function, where $G$ is the generator trained by the
+C-GAN, $C \in \{0,1\}^{256\times256\times4}$ (the conditional input) and $P \in
+\mathbb{R}^{256\times256}$ (the photorealistic output) \newline
 
 
 Or there is an alternate interpretation which is the generator is learning the
-conditional probability distribution as shown in Figure \ref{eqn:probd}. This
+conditional probability distribution as shown in Equation 5. This
 interpretation is less general and rigorous, and is the prevalent interpretation
 in literature. \newline
 
-\begin{figure}[H]
-    \[G_{P|C}(c) = p\]
-    \caption{Generator as a conditional probability distribution, where $G$ is the generator trained by the C-GAN, $C \in [0,1]^{256\times256\times4}$ (the conditional input) and $P \in \mathbb{R}^{256\times256}$ (the photorealistic output) and $p \in P, c \in C$}
-    \label{eqn:probd}
-\end{figure}
+\begin{equation}
+    G_{P|C}(c) = p
+\end{equation} \newline
+
+Generator as a conditional probability distribution, where $G$ is the generator
+trained by the C-GAN, $C \in \{0,1\}^{256\times256\times4}$ (the conditional
+input) and $P \in \mathbb{R}^{256\times256}$ (the photorealistic output) and $p
+\in P, c \in C$ \newline
 
 It would be far out of the scope of this body of work to propose that the first
 intepretation is applicable in this scenario. However given the generator
@@ -77,14 +82,18 @@ trained in our work appears to be able to generate non-physiological
 photorealistic echocardiography frames from deformed conditions, it is not an
 unreasonable speculation. This could potentially be enforced by using a loss
 function which is being optimized for some physical metric, such as the
-Haussdorf distance.\newline
+Haussdorf distance. \newline
+
+To validate the proposal of mathematically describing the generator as a loss
+function, analysing the quantitative effect of linearly scaling the input
+condition would give useful results. \newline 
 
 There are some outlying limitations of this study, namely an analysis of whether
 the data augmentation methods improved the measurement of the end clinical
 indices. This would be good further direction for this study, but was not
 included in the scope of this work. This is in part as it is still speculative
-whether a segmentation approach is superior for the meaurement of clinical
-indices for echocardiography. 3d convolution approach have seen increasing usage
+whether a segmentation approach is superior for the measurement of clinical
+indices for echocardiography. 3D convolution approach have seen increasing usage
 in literature, and are converging on similar accuracy rates as segmentation
 approaches. By focussing on the segmentation accuracy, this study remains
 generalizable to semantic segmentation broadly - rather than just the
@@ -96,20 +105,20 @@ Overlap scores such as IoU would give an interesting analysis of the generator,
 and potentially provide further evidence for the prior speculation of the
 transfer function vs conditional probability distribution argument. \newline
 
-A further limitation for this study is the convergence criteria and loss function potentially was
+A further limitation for this study is the loss function potentially was
 not aligned with the endpoint of the study. A training graph excerpted from
 TensorBoard is provided below in Figure \ref{fig:tboard}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.0\textwidth]{figures/train.png}
-    \caption{Left - Weighted Categorical Cross Entropy (loss function), each class weighted proportionally to space occupied in the overall image. Right - Mean IoU score. Red line for training data, blue line for testing data in both graphs.}
+    \caption{Left - Mean IoU, Right - Weighted Categorical Cross Entropy. In both graphs, red for training data, blue for testing data.}
     \label{fig:tboard}
 \end{figure}
 
 As can be seen, although the loss function (Weighted Categorical Cross Entropy,
 WCCE) would suggest overfitting, one of the accuracy metrics tracked by
-TensorBoard - Mean IoU - is still improving. Given mIoU is more cloesly aligned
+TensorBoard - Mean IoU - is still improving. Given mIoU is more closely aligned
 with this studies endpoint of improved segmentation accuracy, this suggests a
 review of the convergence criteria is needed. During the development of the
 baseline model, we did experiment with the use of mIoU as a loss function - but
